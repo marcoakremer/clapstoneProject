@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   createAuthUserWithEmailAndPassword,
   signInWithGooglePopup,
@@ -9,6 +9,8 @@ import {
 import FormInput from "../form-input/component.form-input";
 import Button from "../button/component.button";
 import "./sign-in.scss";
+import { UserContext } from './../../context/context'
+ 
 
 const State = {
   email: "",
@@ -16,6 +18,7 @@ const State = {
 };
 
 const SignIn = () => {
+  const { setCurrentUser } = useContext(UserContext)
   const [values, setValues] = useState(State);
   const { email, password } = values;
 
@@ -23,7 +26,6 @@ const SignIn = () => {
     try {
       const { user } = await signInWithGooglePopup();
       const res = await createUserDocumentFromAuth(user);
-      console.log(res);
     } catch (err) {
       console.log(err.code);
     }
@@ -36,8 +38,10 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const res = await signInUserWithEmailAndPassword(email, password);
-      console.log(res);
+      const user = await signInUserWithEmailAndPassword(email, password);
+      setCurrentUser(user);
+      
+      
     } catch (err) {
       if (err.code === "auth/wrong-password") alert("wrong password");
     }
