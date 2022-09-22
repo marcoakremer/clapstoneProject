@@ -4,13 +4,13 @@ import {
   signInWithGooglePopup,
   createUserDocumentFromAuth,
   signInUserWithEmailAndPassword,
+  signOutUser,
 } from "../../utils/firebase/utils.firebase";
 
 import FormInput from "../form-input/component.form-input";
 import Button from "../button/component.button";
 import "./sign-in.scss";
-import { UserContext } from './../../context/context'
- 
+import { UserContext } from "./../../context/context";
 
 const State = {
   email: "",
@@ -18,14 +18,13 @@ const State = {
 };
 
 const SignIn = () => {
-  const { setCurrentUser } = useContext(UserContext)
+  const { setCurrentUser } = useContext(UserContext);
   const [values, setValues] = useState(State);
   const { email, password } = values;
 
   const signInWithGoogle = async () => {
     try {
-      const { user } = await signInWithGooglePopup();
-      const res = await createUserDocumentFromAuth(user);
+      await signInWithGooglePopup();
     } catch (err) {
       console.log(err.code);
     }
@@ -40,8 +39,6 @@ const SignIn = () => {
       e.preventDefault();
       const user = await signInUserWithEmailAndPassword(email, password);
       setCurrentUser(user);
-      
-      
     } catch (err) {
       if (err.code === "auth/wrong-password") alert("wrong password");
     }

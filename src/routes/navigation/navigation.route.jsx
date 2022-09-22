@@ -3,12 +3,18 @@ import { Fragment, useContext } from "react";
 import { ReactComponent as TheLogo } from "../../assets/crown.svg";
 import "./navigation.styles.scss";
 import { UserContext } from "../../context/context";
-
+import { signOutUser } from "./../../utils/firebase/utils.firebase";
+import CartIcon from "../../components/cart-icon/cart-icon";
+import CartDropdown from "../../components/cart-dropdown.jsx/cart-dropdown";
+import { CartContext } from "../../context/cart-context";
 
 const Navigation = () => {
-  const { currentUser } = useContext(UserContext)
-  console.log(currentUser);
-  console.log('from navgation seur');
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { isOpen } = useContext(CartContext);
+  const signOutHandler = async () => {
+    await signOutUser();
+    console.log("user successfully logged out!");
+  };
   return (
     <Fragment>
       <div className="nav-bar">
@@ -17,12 +23,21 @@ const Navigation = () => {
         </Link>
         <div className="nav-links-container">
           <Link className="nav-link" to="/shop">
-            Shop
+            SHOP
           </Link>
-          <Link className="nav-link" to="/auth">
-            Sign In
-          </Link>
+
+          {currentUser ? (
+            <span className="nav-link" onClick={signOutHandler}>
+              SIGN OUT
+            </span>
+          ) : (
+            <Link className="nav-link" to="/auth">
+              SIGN IN
+            </Link>
+          )}
+          <CartIcon />
         </div>
+        {isOpen && <CartDropdown />}
       </div>
       <Outlet />
     </Fragment>

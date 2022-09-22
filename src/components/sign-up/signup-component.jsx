@@ -1,55 +1,90 @@
-import { useState } from "react"
-import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from "../../utils/firebase/utils.firebase"
+import { useState, useContext } from "react";
+import {
+  createAuthUserWithEmailAndPassword,
+  createUserDocumentFromAuth,
+} from "../../utils/firebase/utils.firebase";
 
-import FormInput from "../form-input/component.form-input"
-import Button from "../button/component.button"
-import './signup.scss'
-
+import FormInput from "../form-input/component.form-input";
+import Button from "../button/component.button";
+import "./signup.scss";
+import { UserContext } from "../../context/context";
 
 const State = {
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-}
-
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 const SignUp = () => {
-    const [ values, setValues ] = useState(State)
-    const { name, email, password, confirmPassword } = values
-    
-    const onChangeHandler = (e) => {
-        const { name, value } = e.target
-        setValues({ ...values, [name]: value})
-    }
+  const { setCurrentUser } = useContext(UserContext);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        if (password === confirmPassword) {
-            const { user } = await createAuthUserWithEmailAndPassword(email, password)
-            user.displayName = name
-            const userDocRef = await createUserDocumentFromAuth(user)
-        } else return
-    }
+  const [values, setValues] = useState(State);
+  const { name, email, password, confirmPassword } = values;
 
-    return (
-        <div className="sign-up-container">
-            <h2>Don't have an account?</h2>
-            <span>Sign up right now!</span>
-            <form onSubmit={handleSubmit}>
-   
-                <FormInput label='Name' type='text' required onChange={onChangeHandler} name='name' value={name}/>
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
 
-                <FormInput label='Email' type='email' required onChange={onChangeHandler} name='email' value={email}/>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password === confirmPassword) {
+      const { user } = await createAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+      user.displayName = name;
+      const userDocRef = await createUserDocumentFromAuth(user);
+      setCurrentUser(user);
+    } else return;
+  };
 
-                <FormInput label='Password' type='password' required onChange={onChangeHandler} name='password' value={password}/>
+  return (
+    <div className="sign-up-container">
+      <h2>Don't have an account?</h2>
+      <span>Sign up right now!</span>
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          label="Name"
+          type="text"
+          required
+          onChange={onChangeHandler}
+          name="name"
+          value={name}
+        />
 
-                <FormInput label='confirm password' type='password' required onChange={onChangeHandler} name='confirmPassword' value={confirmPassword}/>
+        <FormInput
+          label="Email"
+          type="email"
+          required
+          onChange={onChangeHandler}
+          name="email"
+          value={email}
+        />
 
-                <Button type="submit">submit</Button>
-            </form>
-        </div>
-    )
-}
+        <FormInput
+          label="Password"
+          type="password"
+          required
+          onChange={onChangeHandler}
+          name="password"
+          value={password}
+        />
 
-export default SignUp
+        <FormInput
+          label="confirm password"
+          type="password"
+          required
+          onChange={onChangeHandler}
+          name="confirmPassword"
+          value={confirmPassword}
+        />
+
+        <Button type="submit">submit</Button>
+      </form>
+    </div>
+  );
+};
+
+export default SignUp;
