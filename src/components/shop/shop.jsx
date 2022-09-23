@@ -11,7 +11,7 @@ function Shop() {
       {products.map((prod) => {
         return (
           <div>
-            <ProductCard key={prod.id} product={prod} />;
+            <ProductCard key={prod.id} product={prod} />
           </div>
         );
       })}
