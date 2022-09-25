@@ -10,7 +10,6 @@ const ProductCard = ({ product }) => {
 
   const addHandler = () => {
     addItemToCart(product);
-    console.log(product);
   };
   return (
     <div className="products-card-container">
@@ -19,7 +18,7 @@ const ProductCard = ({ product }) => {
         <span className="name">{name}</span>
         <span className="price">{price}</span>
       </div>
-      <Button onClick={addHandler}>add-</Button>
+      <Button onClick={addHandler}>add</Button>
     </div>
   );
 };

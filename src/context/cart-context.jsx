@@ -1,37 +1,35 @@
 import { createContext, useState } from "react";
 
 const addItem = (originalArray, product) => {
-  // // check if the item its included in the array
-  // const isIncluded = originalArray.find((el) => el.id === product.id);
-  // // if its included, then update the quantity
-  // if (isIncluded) {
-  //   return originalArray.map((el) =>
-  //     el.id === product.id ? { ...el, quantity: el.quantity + 1 } : el
-  //   );
-  // }
-
   let index = originalArray.findIndex((element) => element.id === product.id);
   if (index >= 0) {
-    originalArray[index].quantity |= 5;
+    originalArray[index].quantity += 1;
     return [...originalArray];
   }
   return [...originalArray, { ...product, quantity: 1 }];
-
-  // not found
-
-  // reduce function iterates and check if current value alreary exists by compare current value with previour
-  // if it is, then quantity increase by 1
-  // if its not, then add a new value to it
-  // const newItem = originalArray.reduce((acc, cur) => {
-  //   if (cur.id === product.id) return {cur. }
-  // });
 };
 
+const removeItem = (originalArray, product) => {
+  let index = originalArray.findIndex((element) => element.id === product.id);
+  if (index < 0) return [...originalArray];
+  if (originalArray[index].quantity > 1) {
+    originalArray[index].quantity -= 1;
+    return [...originalArray];
+  }
+  return [...originalArray];
+};
+const clearItem = (originalArray, product) => {
+  return originalArray.filter((el) => el.id !== product.id);
+};
 export const CartContext = createContext({
   isOpen: false,
   setIsOpen: () => {},
   cartItems: [],
   addItemToCart: () => {},
+  removeItemToCart: () => {},
+  totalItems: () => {},
+  totalPrice: 0,
+  clearItemFromCart: () => {},
 });
 
 export const CartProvider = ({ children }) => {
@@ -41,8 +39,35 @@ export const CartProvider = ({ children }) => {
   const addItemToCart = (product) => {
     setcartItems(addItem(cartItems, product));
   };
+  const removeItemToCart = (product) => {
+    setcartItems(removeItem(cartItems, product));
+  };
+  const totalItems = () => {
+    let sum = cartItems.reduce((prev, cur) => {
+      return prev + cur.quantity;
+    }, 0);
+    return sum;
+  };
 
-  const value = { isOpen, setIsOpen, addItemToCart, cartItems };
+  const totalPrice = () => {
+    let price = cartItems.reduce((prev, cur) => {
+      return prev + +cur.quantity * +cur.price;
+    }, 0);
+    return price;
+  };
+  const clearItemFromCart = (product) => {
+    setcartItems(clearItem(cartItems, product));
+  };
+  const value = {
+    isOpen,
+    setIsOpen,
+    addItemToCart,
+    cartItems,
+    totalItems,
+    totalPrice,
+    removeItemToCart,
+    clearItemFromCart,
+  };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

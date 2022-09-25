@@ -13,7 +13,7 @@ const Navigation = () => {
   const { isOpen } = useContext(CartContext);
   const signOutHandler = async () => {
     await signOutUser();
-    console.log("user successfully logged out!");
+    
   };
   return (
     <Fragment>
