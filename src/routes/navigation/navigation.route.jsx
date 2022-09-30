@@ -10,15 +10,17 @@ import { CartContext } from "../../context/cart-context";
 
 const Navigation = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  const { isOpen } = useContext(CartContext);
+  const { isOpen, setIsOpen } = useContext(CartContext);
   const signOutHandler = async () => {
     await signOutUser();
-    
+  };
+  const toggle = () => {
+    setIsOpen(false);
   };
   return (
     <Fragment>
       <div className="nav-bar">
-        <Link className="logo-container" to="/">
+        <Link onClick={toggle} className="logo-container" to="/">
           <TheLogo />
         </Link>
         <div className="nav-links-container">
@@ -31,7 +33,7 @@ const Navigation = () => {
               SIGN OUT
             </span>
           ) : (
-            <Link className="nav-link" to="/auth">
+            <Link onClick={toggle} className="nav-link" to="/auth">
               SIGN IN
             </Link>
           )}

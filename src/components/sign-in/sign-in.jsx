@@ -22,6 +22,14 @@ const SignIn = () => {
   const [values, setValues] = useState(State);
   const { email, password } = values;
 
+  const defaultFormFields = {
+    email: "",
+    password: "",
+  };
+
+  const resetFormFields = () => {
+    setValues(defaultFormFields);
+  };
   const signInWithGoogle = async () => {
     try {
       await signInWithGooglePopup();
@@ -39,6 +47,7 @@ const SignIn = () => {
       e.preventDefault();
       const user = await signInUserWithEmailAndPassword(email, password);
       setCurrentUser(user);
+      resetFormFields();
     } catch (err) {
       if (err.code === "auth/wrong-password") alert("wrong password");
     }

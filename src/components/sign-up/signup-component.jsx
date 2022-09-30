@@ -26,7 +26,9 @@ const SignUp = () => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   };
-
+  const resetFormFields = () => {
+    setValues(State);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
@@ -37,6 +39,7 @@ const SignUp = () => {
       user.displayName = name;
       const userDocRef = await createUserDocumentFromAuth(user);
       setCurrentUser(user);
+      resetFormFields();
     } else return;
   };
 
@@ -81,7 +84,9 @@ const SignUp = () => {
           value={confirmPassword}
         />
 
-        <Button type="submit">submit</Button>
+        <Button onClick={handleSubmit} type="submit">
+          submit
+        </Button>
       </form>
     </div>
   );
